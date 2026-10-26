@@ -6,26 +6,14 @@ export function HomeNavbar() {
 
     return (
         <div className="home-navbar">
-           <Container sx={{ mt: "55px", height: "642px" }}>
-             <Stack 
-                sx={{ height: "50px"}}
-                flexDirection={"row"}
-                justifyContent={"space-between"}
-                alignItems={"center"}
-                >
+           <Container className="home-container">
+             <Stack className="menu" >
                     <Box>
                         <NavLink to="/">
-                           <img 
-                           style={{ width: "125px", height: "38px"}}
-                           src="/icons/burak.svg" />
+                           <img className="brand-logo" src="/icons/burak.svg" />
                         </NavLink>
                     </Box>
-                    <Stack 
-                       flexDirection={"row"} 
-                       justifyContent={"space-between"} 
-                       minWidth={"700px"}
-                       alignItems={"center"}
-                       >
+                    <Stack className="links">
                         <Box className="hover-line">
                             <NavLink to="/" activeClassName="underline">Home</NavLink>
                         </Box>
@@ -48,15 +36,17 @@ export function HomeNavbar() {
                         { /** Basket */}
 
                         {!authMember ? (
-                            <Box><Button 
-                            variant="contained" 
-                            style={{ background: "#3776CC", color: "#f8f8ff" }}
-                            >
+                            <Box>
+                                <Button variant="contained" className="login-button" >
                                 Login
                                 </Button>
                                 </Box>
                             ) : (
-                            <img/>
+                            <img 
+                              className="user-avatar"
+                              src={"/icons/default-user.svg"}
+                              aria-haspopup={"true"}
+                            />
                             )}
                     </Stack>
                 </Stack>
