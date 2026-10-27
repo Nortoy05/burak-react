@@ -1,10 +1,19 @@
-// Task Y
-function findIntersection(arr1: number[], arr2: number[]): number[] {
-  const set2 = new Set(arr2);
-  return Array.from(new Set(arr1)).filter((item) => set2.has(item));
-}
 
-console.log(findIntersection([1, 2, 3], [3, 2, 0])); 
+// Task Z
+function sumEvens(numbers: number[]): number {
+  return numbers
+    .filter((num) => num % 2 === 0)
+    .reduce((sum, num) => sum + num, 0);
+}
+console.log(sumEvens([1, 2, 3, 8, 4]));        // 2
+
+// Task Y
+// function findIntersection(arr1: number[], arr2: number[]): number[] {
+//   const set2 = new Set(arr2);
+//   return Array.from(new Set(arr1)).filter((item) => set2.has(item));
+// }
+
+// console.log(findIntersection([1, 2, 3], [3, 2, 0])); 
 
 
 // Task X
