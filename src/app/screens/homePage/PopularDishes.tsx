@@ -53,7 +53,7 @@ export default function PopularDishes() {
                                  display: "flex",
                                  }}
                                  >
-                                  20
+                                  196
                                   <VisibilityIcon
                                     sx={{ fontSize: 25, marginLeft: "5px"}} 
                                     />
