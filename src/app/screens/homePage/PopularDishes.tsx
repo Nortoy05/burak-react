@@ -24,11 +24,12 @@ export default function PopularDishes() {
           <Stack className="popular-section">
             <Box className="category-title">Popular Dishes</Box>
             <Stack className="cards-frame">
-              {list.map((ele, index) => {
-                return (
-                  <CssVarsProvider key={index}>
-                    <Card className={"card"}>
-                      <CardCover>
+              {list.length > 0 ? (
+                list.map((ele, index) => {
+                  return (
+                    <CssVarsProvider key={index}>
+                      <Card className={"card"}>
+                        <CardCover>
                         <img src={ele.imagePath} alt="" />
                       </CardCover>
                       <CardCover className={"card-cover"}/>
@@ -80,7 +81,10 @@ export default function PopularDishes() {
                     </Card>
                   </CssVarsProvider>
                 );
-              })}
+              })
+            ) : (
+              <Box className="no-data">Popular dishes are not available!</Box>
+            )}
             </Stack>
           </Stack>
         </Container>
