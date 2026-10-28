@@ -225,3 +225,20 @@
     line-height: 34px;
     color: #e3c08d;
 }
+
+/** ADVERTISEMENT **/
+
+.homepage .ads-restaurant-frame {
+    width: 100%;
+    height: 693px;
+    display: flex;
+    overflow: hidden;
+    box-shadow: -3px 0px 20px 14px #34343480;
+}
+
+.homepage .ads-restaurant-frame .ads-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #0c0e12;
+}
