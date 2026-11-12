@@ -34,9 +34,7 @@ class Test extends React.Component<TestProps, TestState> {
       // runs before component unmount
   }
 
-  componentDidUpdate() {
-      console.log("componentDidUpdate");
-  }
+  componentDidUpdate() {}
 
   render() {
     return (
