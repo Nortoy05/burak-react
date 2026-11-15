@@ -1,16 +1,16 @@
 import { Member } from "./member";
-import { Product } from "./produc";
+import { Product } from "./product";
 
 /** REACT APP STATE */
 export interface AppRootState {
-    homePage: HomePageState;
+  homePage: HomePageState;
 }
 
 /** HOMEPAGE */
 export interface HomePageState {
-    popularDishes: Product[];
-    newDishes: Product[];
-    topUsers: Member[];
+  popularDishes: Product[];
+  newDishes: Product[];
+  topUsers: Member[];
 }
 
 /** PRODUCT PAGE */
