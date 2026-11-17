@@ -24,8 +24,7 @@ const popularDishesRetriever = createSelector(
 
 export default function PopularDishes() {
   const { popularDishes } = useSelector(popularDishesRetriever);
-
-  console.log("popularDishes:", popularDishes);
+  const dishes = Array.isArray(popularDishes) ? popularDishes : [];
 
     return (
       <div className="popular-dishes-frame">
@@ -33,9 +32,10 @@ export default function PopularDishes() {
           <Stack className="popular-section">
             <Box className="category-title">Popular Dishes</Box>
             <Stack className="cards-frame">
-              {popularDishes.length !== 0 ? (
-                popularDishes.map((product: Product) => {
-                  const imagePath = `${serverApi}/${product.productImages[0]}`;
+              {dishes.length !== 0 ? (
+                dishes.map((product: Product) => {
+                  const firstImage = product.productImages?.[0];
+                  const imagePath = firstImage ? `${serverApi}/${firstImage}` : "/icons/noimage-list.svg";
                   return (
                     <CssVarsProvider key={product._id}>
                       <Card className={"card"}>

@@ -3,19 +3,14 @@ import Card from "@mui/joy/Card";
 import { CssVarsProvider, Typography } from "@mui/joy";
 import CardOverflow from "@mui/joy/CardOverflow";
 import AspectRatio from "@mui/joy/AspectRatio";
-import { useSelector } from "react-redux";
-import { createSelector } from "reselect";
-import { retrievetopUsers } from "./selector";
-import { serverApi } from "../../../lib/config";
-import { Member } from "../../../lib/types/member";
-
-/** REDUX SLICE & SELECTOR */
-const topUsersRetriever = createSelector(retrievetopUsers, (topUsers) => ({ 
-  topUsers
-}));
+const activeUsers = [
+  { memberNick: "Martin", memberImage: "/img/martin.webp" },
+  { memberNick: "Justin", memberImage: "/img/justin.webp" },
+  { memberNick: "Rose", memberImage: "/img/rose.webp" },
+  { memberNick: "Nusret", memberImage: "/img/nusret.webp" },
+];
 
 export default function ActiveUsers() {
-  const { topUsers } = useSelector(topUsersRetriever)
   return (
     <div className="active-users-frame">
       <Container>
@@ -23,14 +18,12 @@ export default function ActiveUsers() {
           <Box className="category-title">Active Users</Box>
           <Stack className="cards-frame">
             <CssVarsProvider>
-              {topUsers.length !== 0 ? (
-                topUsers.map((member: Member) => {
-                  const imagePath = `${serverApi}/${member.memberImage}`;
-                  return (
-                    <Card key={member._id} variant="outlined" className={"card"}>
+              {activeUsers.length !== 0 ? (
+                activeUsers.map((member) => (
+                    <Card key={member.memberNick} variant="outlined" className={"card"}>
                       <CardOverflow>
                         <AspectRatio ratio="1">
-                          <img src={imagePath} alt="" />
+                          <img src={member.memberImage} alt="" />
                         </AspectRatio>
                       </CardOverflow>
                       <CardOverflow variant="soft" sx={{ py: 1.5 }}>
@@ -39,8 +32,7 @@ export default function ActiveUsers() {
                         </Typography>
                       </CardOverflow>
                     </Card>
-                  );
-                })
+                ))
               ) : (
                 <Box className="no-data">No Active Users!</Box>
               )}
