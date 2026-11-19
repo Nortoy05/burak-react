@@ -20,7 +20,6 @@ class ProductService {
             const result = await axios.get(url);
             const products = result.data;
 
-            // Support APIs that return either a raw array or a wrapped list.
             if (Array.isArray(products)) return products;
             if (Array.isArray(products?.data)) return products.data;
             if (Array.isArray(products?.products)) return products.products;
