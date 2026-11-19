@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Button, Container, Stack } from "@mui/material";
 import Badge from "@mui/material/Badge";
 import SearchIcon from "@mui/icons-material/Search";
@@ -9,14 +9,16 @@ import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import "../../../css/product.css";
-
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "@reduxjs/toolkit";
 import { setProducts } from "./slice";
 import { createSelector} from "@reduxjs/toolkit";
 import { retrieveProducts } from "./selector";
 import { Product } from "../../../lib/types/product";
+import "../../../css/product.css";
+import ProductService from "../../services/ProductService";
+import { ProductCollection } from "../../../lib/enums/product.enum";
+import { serverApi } from "../../../lib/config";
 
 /** REDUX SLICE & SELECTOR */
 const actionDispatch = (dispatch: Dispatch) => ({
@@ -26,26 +28,33 @@ const productsRetriever = createSelector(retrieveProducts, (products) => ({
   products
 }))
 
-const products = [
-  { productName: "Kebab", imagePath: "/img/kebab-fresh.webp" },
-  { productName: "Kebab", imagePath: "/img/kebab-fresh.webp" },
-  { productName: "Kebab", imagePath: "/img/kebab-fresh.webp" },
-  { productName: "Kebab", imagePath: "/img/kebab-fresh.webp" },
-  { productName: "Kebab", imagePath: "/img/kebab-fresh.webp" },
-  { productName: "Kebab", imagePath: "/img/kebab-fresh.webp" },
-  { productName: "Kebab", imagePath: "/img/kebab-fresh.webp" },
-];
-
-const categories = ["Dish", "Salad", "Drink", "Dessert", "Other"];
-
-const brands = [
-  { name: "Burak Gurme", imagePath: "/img/gurme.webp" },
-  { name: "Burak Seafood", imagePath: "/img/seafood.webp" },
-  { name: "Burak Sweets", imagePath: "/img/sweets.webp" },
-  { name: "Burak Doner", imagePath: "/img/doner.webp" },
-];
-
 export default function Products() {
+  const { setProducts } = actionDispatch(useDispatch());
+  const { products } = useSelector(productsRetriever);
+  const productList = Array.isArray(products) ? products : [];
+
+  useEffect(() => {
+    const product = new ProductService();
+    product.getProducts({
+      page:1, 
+      limit: 8, 
+      order: "createdAt", 
+      productCollection: ProductCollection.DISH,
+      search: ""
+    })
+    .then((data) => setProducts(data))
+    .catch((err) => console.log(err));
+  }, []);
+
+  const categories = ["Dish", "Salad", "Drink", "Dessert", "Other"];
+
+  const brands = [
+    { name: "Burak Gurme", imagePath: "/img/gurme.webp" },
+    { name: "Burak Seafood", imagePath: "/img/seafood.webp" },
+    { name: "Burak Sweets", imagePath: "/img/sweets.webp" },
+    { name: "Burak Doner", imagePath: "/img/doner.webp" },
+  ];
+
   return (
     <div className="products">
       <Container>
@@ -90,33 +99,51 @@ export default function Products() {
 
             <Stack className={"product-wrapper"}>
               {products.length !== 0 ? (
-                products.map((product, index) => (
-                  <Stack key={index} className={"product-card"}>
+                products.map((product: Product) => {
+                  const firstImage = product.productImages?.[0];
+                  const isLavash = product.productName.toLowerCase().includes("lavash");
+                  const imagePath = firstImage
+                    ? `${serverApi}/${firstImage}`
+                    : isLavash
+                      ? "/img/lavash.webp"
+                      : "/icons/noimage-list.svg";
+                  const sizeVolume = 
+                    product.productCollection === ProductCollection.DRINK 
+                    ? product.productVolume + "litre"
+                    : product.productSize + "size";
+                  return (
+                  <Stack key={product._id} className={"product-card"}>
                     <Stack
                       className={"product-img"}
-                      sx={{ backgroundImage: `url(${product.imagePath})` }}
+                      sx={{ backgroundImage: `url(${imagePath})` }}
                     >
-                      <div className={"product-sale"}>Large size</div>
+                      <div className={"product-sale"}>{sizeVolume}</div>
                       <Button className={"shop-btn"}>
                         <ShoppingCartIcon sx={{ fontSize: 18 }} />
                       </Button>
-                      <Button className={"view-btn"} sx={{ right: "20px" }}>
-                        <Badge badgeContent={20} color="secondary">
-                          <RemoveRedEyeIcon sx={{ fontSize: 18, color: "#fff" }} />
+                      <Button className={"view-btn"} sx={{ right: "36px" }}>
+                        <Badge badgeContent={product.productViews} color="secondary">
+                          <RemoveRedEyeIcon
+                            sx={{
+                              fontSize: 18,
+                              color: product.productViews === 0 ? "gray" : "white",
+                            }}
+                          />
                         </Badge>
                       </Button>
                     </Stack>
                     <Box className={"product-desc"}>
                       <span className={"product-title"}>{product.productName}</span>
-                      <div className={"product-price"}>
-                        <MonetizationOnIcon sx={{ fontSize: 18 }} />
-                        <span>15</span>
+                      <div className={"pproduct-desc"}>
+                        <MonetizationOnIcon />
+                        {product.productPrice}
                       </div>
                     </Box>
                   </Stack>
-                ))
+                  );
+                })
               ) : (
-                <Box className={"no-data"}>Products are not available!</Box>
+                <Box className="no-data">Products are not available!</Box>
               )}
             </Stack>
           </Stack>

@@ -33,7 +33,12 @@ export default function NewDishes() {
               {dishes.length !== 0 ? (
                 dishes.map((product: Product) => {
                   const firstImage = product.productImages?.[0];
-                  const imagePath = firstImage ? `${serverApi}/${firstImage}` : "/icons/noimage-list.svg";
+                  const isLavash = product.productName.toLowerCase().includes("lavash");
+                  const imagePath = firstImage
+                    ? `${serverApi}/${firstImage}`
+                    : isLavash
+                      ? "/img/lavash.webp"
+                      : "/icons/noimage-list.svg";
                   const sizeVolume = 
                   product.productCollection === ProductCollection.DRINK 
                     ? product.productVolume + "l" 
