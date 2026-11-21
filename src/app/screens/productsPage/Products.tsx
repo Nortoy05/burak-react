@@ -56,10 +56,11 @@ export default function Products() {
   }, [dispatch, productSearch]);
 
   useEffect(() => {
-    if (searchText === "") {
-      setProductSearch({ ...productSearch});
-    }
-  }, [searchText]);
+  if (searchText === "" && productSearch.search !== "") {
+    setProductSearch({ ...productSearch, search: "" });
+  }
+}, [searchText]);
+
 
   const searchCollectionHandler = (collection: ProductCollection) => {
     productSearch.page = 1;
@@ -142,7 +143,7 @@ const paginationHandler = (e: ChangeEvent<any>, value: number) => {
 };
 
 const chooseDishHandler = (id: string) => {
-  history.push(`/product/${id}`);
+  history.push(`/products/${id}`);
 }
 
   return (
@@ -175,8 +176,8 @@ const chooseDishHandler = (id: string) => {
           </Stack>
 
           <Stack className={"dishes-filter-section"}>
-            <Button 
-              variant={"contained"} 
+            <Button
+              variant={"contained"}
               className={"order"}
               color={
                 productSearch.order === "createdAt" ? "primary" : "secondary"
@@ -185,16 +186,16 @@ const chooseDishHandler = (id: string) => {
             >
               New
             </Button>
-            <Button 
-              variant={"contained"} 
+            <Button
+              variant={"contained"}
               className={"order"}
               color={productSearch.order === "price" ? "primary" : "secondary"}
               onClick={() => searchOrderHandler("productPrice")}
             >
               Price
             </Button>
-            <Button 
-              variant={"contained"} 
+            <Button
+              variant={"contained"}
               className={"order"}
               color={productSearch.order === "views" ? "primary" : "secondary"}
               onClick={() => searchOrderHandler("productViews")}
@@ -205,86 +206,105 @@ const chooseDishHandler = (id: string) => {
 
           <Stack className={"list-category-section"}>
             <Stack className={"product-category"}>
-  {collections.map((c) => (
-    <Button
-      key={c.value}
-      variant={"contained"}
-      className={
-        productSearch.productCollection === c.value
-          ? "category active"
-          : "category"
-      }
-      onClick={() => searchCollectionHandler(c.value)}
-    >
-      {c.label}
-    </Button>
-  ))}
-</Stack>
+              {collections.map((c) => (
+                <Button
+                  key={c.value}
+                  variant={"contained"}
+                  className={
+                    productSearch.productCollection === c.value
+                      ? "category active"
+                      : "category"
+                  }
+                  onClick={() => searchCollectionHandler(c.value)}
+                >
+                  {c.label}
+                </Button>
+              ))}
+            </Stack>
 
             <Stack className={"list-category-section"}>
-            <Stack className={"product-wrapper"}>
-              {productList.length !== 0 ? (
-                productList.map((product: Product) => {
-                  const firstImage = product.productImages?.[0];
-                  const isLavash = product.productName.toLowerCase().includes("lavash");
-                  const imagePath = firstImage
-                    ? `${serverApi}/${firstImage}`
-                    : isLavash
-                      ? "/img/lavash.webp"
-                      : "/icons/noimage-list.svg";
-                  const sizeVolume = 
-                    product.productCollection === ProductCollection.DRINK 
-                    ? product.productVolume + "litre"
-                    : product.productSize + "size";
-                  return (
-                  <Stack 
-                    key={product._id} 
-                    className={"product-card"} 
-                    onClick={() => chooseDishHandler(product._id)}  
-                    >
-                    <Stack
-                      className={"product-img"}
-                      sx={{ backgroundImage: `url(${imagePath})` }}
-                    >
-                      <div className={"product-sale"}>{sizeVolume}</div>
-                      <Button className={"shop-btn"}>
-                        <ShoppingCartIcon sx={{ fontSize: 18 }} />
-                      </Button>
-                      <Button className={"view-btn"} sx={{ right: "36px" }}>
-                        <Badge badgeContent={product.productViews} color="secondary">
-                          <RemoveRedEyeIcon
-                            sx={{
-                              fontSize: 18,
-                              color: product.productViews === 0 ? "gray" : "white",
-                            }}
-                          />
-                        </Badge>
-                      </Button>
-                    </Stack>
-                    <Box className={"product-desc"}>
-                      <span className={"product-title"}>{product.productName}</span>
-                      <div className={"pproduct-desc"}>
-                        <MonetizationOnIcon />
-                        {product.productPrice}
-                      </div>
-                    </Box>
-                  </Stack>
-                  );
-                })
-              ) : (
-                <Box className="no-data">Products are not available!</Box>
-              )}
-            </Stack>
+              <Stack className={"product-wrapper"}>
+                {productList.length !== 0 ? (
+                  productList.map((product: Product) => {
+                    const firstImage = product.productImages?.[0];
+                    const isLavash = product.productName
+                      .toLowerCase()
+                      .includes("lavash");
+                    const imagePath = firstImage
+                      ? `${serverApi}/${firstImage}`
+                      : isLavash
+                        ? "/img/lavash.webp"
+                        : "/icons/noimage-list.svg";
+                    const sizeVolume =
+                      product.productCollection === ProductCollection.DRINK
+                        ? product.productVolume + "litre"
+                        : product.productSize + "size";
+                    return (
+                      <Stack
+                        key={product._id}
+                        className={"product-card"}
+                        onClick={() => {
+                          chooseDishHandler(product._id);
+                        }}
+                      >
+                        <Stack
+                          className={"product-img"}
+                          sx={{ backgroundImage: `url(${imagePath})` }}
+                        >
+                          <div className={"product-sale"}>{sizeVolume}</div>
+                          <Button className={"shop-btn"}>
+                            <ShoppingCartIcon sx={{ fontSize: 18 }} />
+                          </Button>
+                          <Button className={"view-btn"} sx={{ right: "36px" }}>
+                            <Badge
+                              badgeContent={product.productViews}
+                              color="secondary"
+                            >
+                              <RemoveRedEyeIcon
+                                sx={{
+                                  fontSize: 18,
+                                  color:
+                                    product.productViews === 0
+                                      ? "gray"
+                                      : "white",
+                                }}
+                              />
+                            </Badge>
+                          </Button>
+                        </Stack>
+                        <Box className={"product-desc"}>
+                          <span className={"product-title"}>
+                            {product.productName}
+                          </span>
+                          <div className={"pproduct-desc"}>
+                            <MonetizationOnIcon />
+                            {product.productPrice}
+                          </div>
+                        </Box>
+                      </Stack>
+                    );
+                  })
+                ) : (
+                  <Box className="no-data">Products are not available!</Box>
+                )}
+              </Stack>
             </Stack>
           </Stack>
 
           <Stack className={"pagination-section"}>
             <Pagination
-              count={products.length  !== 0 ? productSearch.page + 1 : productSearch.page}
+              count={
+                products.length !== 0
+                  ? productSearch.page + 1
+                  : productSearch.page
+              }
               page={productSearch.page}
               renderItem={(item) => (
                 <PaginationItem
-                  components={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                  components={{
+                    previous: ArrowBackIcon,
+                    next: ArrowForwardIcon,
+                  }}
                   {...item}
                   color={"secondary"}
                 />
