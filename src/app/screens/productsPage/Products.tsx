@@ -19,6 +19,7 @@ import ProductService from "../../services/ProductService";
 import { ProductCollection } from "../../../lib/enums/product.enum";
 import { serverApi } from "../../../lib/config";
 import { useHistory } from "react-router-dom";
+import { CartItem } from "../../../lib/types/search";
 
 const productsRetriever = createSelector(retrieveProducts, (products) => ({
   products,
@@ -32,7 +33,12 @@ const collections: { value: ProductCollection; label: string }[] = [
   { value: ProductCollection.OTHER, label: "Other" },
 ];
 
-export default function Products() {
+interface ProductsProps {
+  onAdd: ( item: CartItem ) => void;
+}
+
+export default function Products(props: ProductsProps) {
+  const { onAdd } = props;
   const dispatch = useDispatch();
   const { products } = useSelector(productsRetriever);
   const productList = Array.isArray(products) ? products : [];
@@ -252,7 +258,19 @@ const chooseDishHandler = (id: string) => {
                           sx={{ backgroundImage: `url(${imagePath})` }}
                         >
                           <div className={"product-sale"}>{sizeVolume}</div>
-                          <Button className={"shop-btn"}>
+                          <Button 
+                              className={"shop-btn"}
+                              onClick={(e) => {
+                                console.log("BUTTON PRESSED!");
+                                onAdd({ 
+                                  _id: product._id, 
+                                  quantity: 1,
+                                  name: product.productName, 
+                                  price: product.productPrice, 
+                                  image: product.productImages[0],
+                                });
+                                e.stopPropagation();
+                              }}>
                             <ShoppingCartIcon sx={{ fontSize: 18 }} />
                           </Button>
                           <Button className={"view-btn"} sx={{ right: "36px" }}>
