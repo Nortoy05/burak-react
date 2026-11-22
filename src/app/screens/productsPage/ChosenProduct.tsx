@@ -14,7 +14,7 @@ import { FreeMode, Navigation, Thumbs } from "swiper";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "@reduxjs/toolkit";
 import { setChosenProduct, setRestaurant } from "./slice";
-import { createSelector} from "@reduxjs/toolkit";
+import { createSelector } from "@reduxjs/toolkit";
 import { retrieveChosenProduct, retrieveRestaurant } from "./selector";
 import { Product } from "../../../lib/types/product";
 import { useParams } from "react-router-dom";
@@ -30,21 +30,18 @@ const actionDispatch = (dispatch: Dispatch) => ({
   setChosenProduct: (data: Product) => dispatch(setChosenProduct(data)),
 });
 const chosenProductRetriever = createSelector(
-  retrieveChosenProduct, 
+  retrieveChosenProduct,
   (chosenProduct) => ({
-  chosenProduct,
-})
+    chosenProduct,
+  }),
 );
 
-const restaurantRetriever = createSelector(
-  retrieveRestaurant, 
-  (resturant) => ({
+const restaurantRetriever = createSelector(retrieveRestaurant, (resturant) => ({
   resturant,
-})
-);
+}));
 
 interface ChosenProductProps {
-  onAdd: ( item: CartItem ) => void;
+  onAdd: (item: CartItem) => void;
 }
 
 export default function ChosenProduct(props: ChosenProductProps) {
@@ -57,15 +54,15 @@ export default function ChosenProduct(props: ChosenProductProps) {
   useEffect(() => {
     const product = new ProductService();
     product
-    .getProduct(productId)
-    .then((data) => setChosenProduct(data))
-    .catch((err) => console.log(err));
+      .getProduct(productId)
+      .then((data) => setChosenProduct(data))
+      .catch((err) => console.log(err));
 
     const member = new MemberService();
     member
-    .getRestaurant()
-    .then((data) => setRestaurant(data))
-    .catch((err) => console.log(err));
+      .getRestaurant()
+      .then((data) => setRestaurant(data))
+      .catch((err) => console.log(err));
   }, []);
 
   if (!chosenProduct) return null;
@@ -83,18 +80,19 @@ export default function ChosenProduct(props: ChosenProductProps) {
           >
             {chosenProduct?.productImages.map((ele: string, index: number) => {
               const imagePath = `${serverApi}/${ele}`;
-                return (
-                  <SwiperSlide key={index}>
-                    <img className="slider-image" src={imagePath} />
-                  </SwiperSlide>
-                );
-              
+              return (
+                <SwiperSlide key={index}>
+                  <img className="slider-image" src={imagePath} />
+                </SwiperSlide>
+              );
             })}
           </Swiper>
         </Stack>
         <Stack className={"chosen-product-info"}>
           <Box className={"info-box"}>
-            <strong className={"product-name"}>{chosenProduct?.productName}</strong>
+            <strong className={"product-name"}>
+              {chosenProduct?.productName}
+            </strong>
             <span className={"resto-name"}>{resturant?.memberNick}</span>
             <span className={"resto-name"}>{resturant?.memberPhone}</span>
             <Box className={"rating-box"}>
@@ -106,14 +104,31 @@ export default function ChosenProduct(props: ChosenProductProps) {
                 </div>
               </div>
             </Box>
-            <p className={"product-desc"}>{chosenProduct?.productDesc ? chosenProduct?.productDesc : "No description available."}</p>
+            <p className={"product-desc"}>
+              {chosenProduct?.productDesc
+                ? chosenProduct?.productDesc
+                : "No description available."}
+            </p>
             <Divider height="1" width="100%" bg="#000000" />
             <div className={"product-price"}>
               <span>Price:</span>
               <span>${chosenProduct?.productPrice}</span>
             </div>
             <div className={"button-box"}>
-              <Button variant="contained">Add To Basket</Button>
+              <Button
+                variant="contained"
+                onClick={(e) => {
+                  onAdd({
+                    _id: chosenProduct._id,
+                    quantity: 1,
+                    name: chosenProduct.productName,
+                    price: chosenProduct.productPrice,
+                    image: chosenProduct.productImages[0],
+                  });
+                }}
+              >
+                Add To Basket
+              </Button>
             </div>
           </Box>
         </Stack>

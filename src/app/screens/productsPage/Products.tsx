@@ -34,7 +34,7 @@ const collections: { value: ProductCollection; label: string }[] = [
 ];
 
 interface ProductsProps {
-  onAdd: ( item: CartItem ) => void;
+  onAdd: (item: CartItem) => void;
 }
 
 export default function Products(props: ProductsProps) {
@@ -62,73 +62,92 @@ export default function Products(props: ProductsProps) {
   }, [dispatch, productSearch]);
 
   useEffect(() => {
-  if (searchText === "" && productSearch.search !== "") {
-    setProductSearch({ ...productSearch, search: "" });
-  }
-}, [searchText]);
-
+    if (searchText === "" && productSearch.search !== "") {
+      setProductSearch({ ...productSearch, search: "" });
+    }
+  }, [searchText]);
 
   const searchCollectionHandler = (collection: ProductCollection) => {
     productSearch.page = 1;
     productSearch.productCollection = collection;
     setProductSearch({ ...productSearch });
-  }
+  };
 
   const searchOrderHandler = (order: string) => {
     productSearch.page = 1;
     productSearch.order = order;
     setProductSearch({ ...productSearch });
-  }
+  };
 
   <Stack className={"product-category"}>
-  <Button
-    variant={"contained"}
-    color={productSearch.productCollection === ProductCollection.DISH ? "primary" : "secondary"}
-    onClick={() => searchCollectionHandler(ProductCollection.DISH)}
-  >
-    Dish
-  </Button>
-  <Button
-  variant={"contained"}
-  color={productSearch.productCollection === ProductCollection.SALAD ? "primary" : "secondary"}
-  onClick={() => {
-    alert("SALAD");
-    searchCollectionHandler(ProductCollection.SALAD);
-  }}
->
-  Salad
-</Button>
-  <Button
-    variant={"contained"}
-    color={productSearch.productCollection === ProductCollection.DRINK ? "primary" : "secondary"}
-    onClick={() => {
-      alert("DRINK");
-      searchCollectionHandler(ProductCollection.DRINK);
-    }}
-  >
-    Drink
-  </Button>
-  <Button
-    variant={"contained"}
-    color={productSearch.productCollection === ProductCollection.DESSERT ? "primary" : "secondary"}
-    onClick={() => {
-      alert("DESSERT");
-      searchCollectionHandler(ProductCollection.DESSERT);
-    }}
-  >
-    Dessert
-  </Button>
-  <Button
-    variant={"contained"}
-    color={productSearch.productCollection === ProductCollection.OTHER ? "primary" : "secondary"}
-    onClick={() => {
-      alert("OTHER");
-      searchCollectionHandler(ProductCollection.OTHER);
-    }}
-  >
-    Other
-  </Button>
-</Stack>
+    <Button
+      variant={"contained"}
+      color={
+        productSearch.productCollection === ProductCollection.DISH
+          ? "primary"
+          : "secondary"
+      }
+      onClick={() => searchCollectionHandler(ProductCollection.DISH)}
+    >
+      Dish
+    </Button>
+    <Button
+      variant={"contained"}
+      color={
+        productSearch.productCollection === ProductCollection.SALAD
+          ? "primary"
+          : "secondary"
+      }
+      onClick={() => {
+        alert("SALAD");
+        searchCollectionHandler(ProductCollection.SALAD);
+      }}
+    >
+      Salad
+    </Button>
+    <Button
+      variant={"contained"}
+      color={
+        productSearch.productCollection === ProductCollection.DRINK
+          ? "primary"
+          : "secondary"
+      }
+      onClick={() => {
+        alert("DRINK");
+        searchCollectionHandler(ProductCollection.DRINK);
+      }}
+    >
+      Drink
+    </Button>
+    <Button
+      variant={"contained"}
+      color={
+        productSearch.productCollection === ProductCollection.DESSERT
+          ? "primary"
+          : "secondary"
+      }
+      onClick={() => {
+        alert("DESSERT");
+        searchCollectionHandler(ProductCollection.DESSERT);
+      }}
+    >
+      Dessert
+    </Button>
+    <Button
+      variant={"contained"}
+      color={
+        productSearch.productCollection === ProductCollection.OTHER
+          ? "primary"
+          : "secondary"
+      }
+      onClick={() => {
+        alert("OTHER");
+        searchCollectionHandler(ProductCollection.OTHER);
+      }}
+    >
+      Other
+    </Button>
+  </Stack>;
 
   const brands = [
     { name: "Burak Gurme", imagePath: "/img/gurme.webp" },
@@ -137,20 +156,20 @@ export default function Products(props: ProductsProps) {
     { name: "Burak Doner", imagePath: "/img/doner.webp" },
   ];
 
-const searchProductHandler = () => {
-  productSearch.page = 1;
-  productSearch.search = searchText;
-  setProductSearch({ ...productSearch });
-};
+  const searchProductHandler = () => {
+    productSearch.page = 1;
+    productSearch.search = searchText;
+    setProductSearch({ ...productSearch });
+  };
 
-const paginationHandler = (e: ChangeEvent<any>, value: number) => {
-  productSearch.page = value;
-  setProductSearch({ ...productSearch });
-};
+  const paginationHandler = (e: ChangeEvent<any>, value: number) => {
+    productSearch.page = value;
+    setProductSearch({ ...productSearch });
+  };
 
-const chooseDishHandler = (id: string) => {
-  history.push(`/products/${id}`);
-}
+  const chooseDishHandler = (id: string) => {
+    history.push(`/products/${id}`);
+  };
 
   return (
     <div className="products">
@@ -258,19 +277,20 @@ const chooseDishHandler = (id: string) => {
                           sx={{ backgroundImage: `url(${imagePath})` }}
                         >
                           <div className={"product-sale"}>{sizeVolume}</div>
-                          <Button 
-                              className={"shop-btn"}
-                              onClick={(e) => {
-                                console.log("BUTTON PRESSED!");
-                                onAdd({ 
-                                  _id: product._id, 
-                                  quantity: 1,
-                                  name: product.productName, 
-                                  price: product.productPrice, 
-                                  image: product.productImages[0],
-                                });
-                                e.stopPropagation();
-                              }}>
+                          <Button
+                            className={"shop-btn"}
+                            onClick={(e) => {
+                              console.log("BUTTON PRESSED!");
+                              onAdd({
+                                _id: product._id,
+                                quantity: 1,
+                                name: product.productName,
+                                price: product.productPrice,
+                                image: product.productImages[0],
+                              });
+                              e.stopPropagation();
+                            }}
+                          >
                             <ShoppingCartIcon sx={{ fontSize: 18 }} />
                           </Button>
                           <Button className={"view-btn"} sx={{ right: "36px" }}>
