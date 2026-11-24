@@ -10,12 +10,11 @@ import FinishedOrders from "./FinishedOrders";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "@reduxjs/toolkit";
 import { setPausedOrders, setProcessOrders, setFinishedOrders } from "./slice";
-
-import "../../../css/order.css";
 import { Order, OrderInquiry } from "../../../lib/types/order";
 import { OrderStatus } from "../../../lib/enums/order.enum";
 import OrderService from "../../services/OrderSevice";
 import { useGlobals } from "../../hooks/useGlobals";
+import "../../../css/order.css";
 /** REDUX SLICE & SELECTOR */
 const actionDispatch = (dispatch: Dispatch) => ({
   setPausedOrders: (data: Order[]) => dispatch(setPausedOrders(data)),
@@ -80,7 +79,7 @@ export default function OrdersPage() {
 
             <Stack className={"order-main-content"}>
               <PausedOrders setValue={setValue}/>
-              <ProcessOrders />
+              <ProcessOrders setValue={setValue} />
               <FinishedOrders />
             </Stack>
           </TabContext>

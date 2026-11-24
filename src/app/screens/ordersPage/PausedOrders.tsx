@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Stack } from "@mui/material";
-import Button from "@mui/material/Button";
+import { Button } from "@mui/material";
 import TabPanel from "@mui/lab/TabPanel";
 
 import { useSelector } from "react-redux";
@@ -54,6 +54,29 @@ export default function PausedOrders(props: PausedOrdersProps) {
     }
    };
 
+   const  processOrderHandler = async (e: T) => {
+    try {
+      if (!authMember) throw new Error(Messages.error2);
+      const orderId = e.target.value;
+      const input: OrderUpdateInput = { 
+        orderId: orderId, 
+        orderStatus: OrderStatus.PROCESS,
+      };
+
+      const confirmation = window.confirm("Do you want to proceed with payment?");
+      if (confirmation) {
+        const order = new OrderService();
+        await order.updateOrder(input);
+        setValue("2");
+        setOrderBuilder(new Date());
+
+      } 
+    } catch (err) {
+      console.log(err);
+      sweetErrorHandling(err).then();
+    }
+   };
+
 
   return (
     <TabPanel value={"1"}>
@@ -64,7 +87,7 @@ export default function PausedOrders(props: PausedOrdersProps) {
               <Box className={"order-box-scroll"}>
                 {order?.orderItems?.map((item: OrderItem) => {
                   const product: Product = order.productData.filter(
-                    (ele: Product) => item.productId === ele._id
+                    (ele: Product) => item.productId === ele._id,
                   )[0];
                   const imagePath = `${serverApi}/${product.productImages[0]}`;
                   return (
@@ -77,7 +100,8 @@ export default function PausedOrders(props: PausedOrdersProps) {
                         <p>{item.itemQuantity}</p>
                         <img src={"/icons/pause.svg"} alt="" />
                         <p style={{ marginLeft: "15px" }}>
-                          ${item.itemQuantity * item.itemPrice}</p>
+                          ${item.itemQuantity * item.itemPrice}
+                        </p>
                       </Box>
                     </Box>
                   );
@@ -104,7 +128,7 @@ export default function PausedOrders(props: PausedOrdersProps) {
                   <p>${order.orderTotal}</p>
                 </Box>
                 <Button
-                value={order._id}
+                  value={order._id}
                   variant="contained"
                   color="secondary"
                   className={"cancel-button"}
@@ -112,10 +136,12 @@ export default function PausedOrders(props: PausedOrdersProps) {
                 >
                   Cancel
                 </Button>
-                <Button 
-                   value={order._id}
-                   variant="contained" 
-                   className={"pay-button"}>
+                <Button
+                  value={order._id}
+                  variant="contained"
+                  className={"pay-button"}
+                  onClick={processOrderHandler}
+                >
                   Payment
                 </Button>
               </Box>
