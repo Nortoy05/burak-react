@@ -23,7 +23,7 @@ interface BasketProps {
 
 export default function Basket(props: BasketProps) {
   const { cartItems, onAdd, onRemove, onDelete, onDeleteAll } = props;
-  const {authMember } = useGlobals() ;
+  const {authMember, setOrderBuilder } = useGlobals() ;
   const history = useHistory();
   const itemsPrice: number = cartItems.reduce((a, c) => a + c.price * c.quantity, 0);
   const shippingCost: number = itemsPrice < 100 ? 10 : 0;
@@ -51,8 +51,7 @@ export default function Basket(props: BasketProps) {
 
       onDeleteAll();
 
-      // REFRESH VIA CONTEXT
-      
+      setOrderBuilder(new Date());
       history.push("/orders")
     } catch(err) {
       console.log(err);
@@ -174,3 +173,7 @@ export default function Basket(props: BasketProps) {
     </Box>
   );
 }
+function setOrderBuilder(arg0: Date) {
+  throw new Error("Function not implemented.");
+}
+
