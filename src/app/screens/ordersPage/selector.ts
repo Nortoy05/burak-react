@@ -6,7 +6,7 @@ const selectOrdersPage = (state: AppRootState) => state.ordersPage;
 
 export const retrievePausedOrders = createSelector(
     selectOrdersPage,
-    (OrdersPage) => OrdersPage.pausedDishes
+    (OrdersPage) => OrdersPage.pausedOrders
 );
 
 export const retrieveProcessOrders = createSelector(
