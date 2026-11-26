@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import Button from "@mui/material/Button";
 import { useGlobals } from "../../hooks/useGlobals";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MemberUpdateInput } from "../../../lib/types/member";
 import { T } from "../../../lib/types/common";
 import { Messages, serverApi } from "../../../lib/config";
@@ -29,26 +29,38 @@ export function Settings() {
     }
   );
 
+  // Refresh the form when the saved member changes in the global context.
+  useEffect(() => {
+    if (!authMember) return;
+    setMemberUpdateInput({
+      _id: authMember._id ?? "",
+      memberNick: authMember.memberNick,
+      memberPhone: authMember.memberPhone,
+      memberAddress: authMember.memberAddress,
+      memberDesc: authMember.memberDesc,
+      memberImage: authMember.memberImage,
+    });
+    setMemberImage(authMember.memberImage
+      ? `${serverApi}/${authMember.memberImage}`
+      : "/icons/default-user.svg");
+  }, [authMember]);
+
   /**  HANDLERS **/
 
   const memberNickHandler = (e: T) => {
-    memberUpdateInput.memberNick = e.target.value;
-    setMemberUpdateInput({ ...memberUpdateInput });
+    setMemberUpdateInput((current) => ({ ...current, memberNick: e.target.value }));
   };
 
   const memberPhoneHandler = (e: T) => {
-    memberUpdateInput.memberPhone = e.target.value;
-    setMemberUpdateInput({ ...memberUpdateInput });
+    setMemberUpdateInput((current) => ({ ...current, memberPhone: e.target.value }));
   };
 
   const memberAddressHandler = (e: T) => {
-    memberUpdateInput.memberAddress = e.target.value;
-    setMemberUpdateInput({ ...memberUpdateInput });
+    setMemberUpdateInput((current) => ({ ...current, memberAddress: e.target.value }));
   };
 
   const memberDescriptionHandler = (e: T) => {
-    memberUpdateInput.memberDesc = e.target.value;
-    setMemberUpdateInput({ ...memberUpdateInput });
+    setMemberUpdateInput((current) => ({ ...current, memberDesc: e.target.value }));
   };
 
   const handleSubmitButton = async () => {
@@ -66,6 +78,17 @@ export function Settings() {
       const member = new MemberService();
       const result = await member.updateMember(memberUpdateInput);
       setAuthMember(result);
+      setMemberUpdateInput({
+        _id: result._id ?? authMember._id ?? "",
+        memberNick: result.memberNick,
+        memberPhone: result.memberPhone,
+        memberAddress: result.memberAddress,
+        memberDesc: result.memberDesc,
+        memberImage: result.memberImage,
+      });
+      setMemberImage(result.memberImage
+        ? `${serverApi}/${result.memberImage}`
+        : "/icons/default-user.svg");
       
       await sweetTopSmallSuccessAlert("Modified successfully!", 700);
     } catch (err) {
@@ -76,7 +99,7 @@ export function Settings() {
 
   const handleImageViewer = (e: T) => {
     const file = e.target.files[0];
-    console.log("file", file);
+    if (!file) return;
     const fileType = file.type,
       validateImageTypes = ["image/jpg", "image/png", "image/jpeg"];
 
@@ -84,8 +107,7 @@ export function Settings() {
         sweetErrorHandling(Messages.error5).then();
       } else {
         if (file) {
-          memberUpdateInput.memberImage = file;
-          setMemberUpdateInput({ ...memberUpdateInput});
+          setMemberUpdateInput((current) => ({ ...current, memberImage: file }));
           setMemberImage(URL.createObjectURL(file));
         }
       }

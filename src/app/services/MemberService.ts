@@ -49,7 +49,7 @@ class MemberService {
             
             const member: Member = result.data.member;
             console.log("signup member:", member);
-            localStorage.setItem("authMember", JSON.stringify(member));
+            localStorage.setItem("memberData", JSON.stringify(member));
 
             return member;
         } catch(err) {
@@ -66,7 +66,7 @@ class MemberService {
 
             const member: Member = result.data.member;
             console.log("login member:", member);
-            localStorage.setItem("authMember", JSON.stringify(member));
+            localStorage.setItem("memberData", JSON.stringify(member));
 
             return member;
         } catch(err) {
@@ -82,6 +82,7 @@ class MemberService {
             console.log("logout:", result);
 
             localStorage.removeItem("memberData");
+            localStorage.removeItem("authMember");
         } catch(err) {
             console.log("Error, logout:", err);
             throw err;
@@ -106,7 +107,8 @@ class MemberService {
             });
             console.log("updateMember:", result);
 
-            const member: Member = result.data;
+            // The API may return the member directly or wrap it in `member`/`data`.
+            const member: Member = result.data?.member ?? result.data?.data ?? result.data;
             localStorage.setItem("memberData", JSON.stringify(member));
             return member;
         } catch(err) {
